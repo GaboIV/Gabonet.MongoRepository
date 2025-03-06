@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <PackageId>Gabonet.MongoRepository</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>Gabriel Caraballo</Authors>
+    <Company>Gabonet</Company>
+    <Description>Un repositorio genérico para MongoDB en .NET</Description>
+    <PackageTags>MongoDB Repository CSharp .NET</PackageTags>
+    <RepositoryUrl>https://github.com/gaboiv/Gabonet.MongoRepository</RepositoryUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <IncludeSymbols>true</IncludeSymbols>
+    <IncludeSource>true</IncludeSource>
+  </PropertyGroup>
+</Project>
