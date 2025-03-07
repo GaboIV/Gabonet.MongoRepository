@@ -1,4 +1,4 @@
-namespace Gabonet.MongoRepository.DTOs;
+namespace Gabonet.MongoRepository.Abstractions.DTOs;
 
 public class PaginatedDataDto<T>
 {

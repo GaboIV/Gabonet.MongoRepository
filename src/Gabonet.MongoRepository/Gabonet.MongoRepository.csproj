@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <PackageId>Gabonet.MongoRepository</PackageId>
-    <Version>1.0.1</Version>
+    <Version>0.1.0</Version>
     <Authors>Gabriel Caraballo</Authors>
     <Company>Gabonet</Company>
     <Description>Un repositorio genérico para MongoDB en .NET</Description>
@@ -15,6 +15,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="../README.md" Pack="true" PackagePath="/" />
+    <ProjectReference Include="..\Gabonet.MongoRepository.Abstractions\Gabonet.MongoRepository.Abstractions.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
 </Project>

@@ -17,18 +17,18 @@ Gabonet.MongoRepository es una biblioteca .NET que proporciona una implementaci�
 Para instalar este paquete en tu proyecto, usa el siguiente comando:
 
 ```sh
- dotnet add package Gabonet.MongoRepository --version 1.0.1
+ dotnet add package Gabonet.MongoRepository --version 0.2.0
 ```
 
 O a través de NuGet Package Manager:
 
 ```powershell
-Install-Package Gabonet.MongoRepository -Version 1.0.1
+Install-Package Gabonet.MongoRepository -Version 0.2.0
 ```
 
 {{ edit_1 }}
-- La versión 1.0.0 es para MongoDB.Driver 2.19 hasta 2.30.
-- La versión 1.0.1 es para la versión 3.0.0 en adelante.
+- La versión 0.1.0 es para MongoDB.Driver 2.19 hasta 2.28.0
+- La versión 0.2.0 es para la versión 2.29.0 en adelante hasta 3.2.1.
 {{ edit_1 }}
 
 ## Uso Básico

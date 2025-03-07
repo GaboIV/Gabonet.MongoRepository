@@ -13,13 +13,7 @@ public static class AggregationHelpers
         var serializerRegistry = BsonSerializer.SerializerRegistry;
         var documentSerializer = serializerRegistry.GetSerializer<T>();
 
-        var renderArgs = new RenderArgs<T>
-        {
-            DocumentSerializer = documentSerializer,
-            SerializerRegistry = serializerRegistry
-        };
-
-        var bsonFilter = filterDefinition.Render(renderArgs);
+        var bsonFilter = filterDefinition.Render(documentSerializer, serializerRegistry);
 
         if (!bsonFilter.Elements.Any())
         {

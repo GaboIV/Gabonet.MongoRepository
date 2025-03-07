@@ -5,9 +5,9 @@ using MongoDB.Driver;
 using System.Linq.Expressions;
 using MongoDB.Bson.Serialization;
 using Gabonet.MongoRepository.Helpers;
-using Gabonet.MongoRepository.Interfaces;
-using Gabonet.MongoRepository.DTOs;
-using GasonetAuth.Application.Requests;
+using Gabonet.MongoRepository.Abstractions;
+using Gabonet.MongoRepository.Abstractions.DTOs;
+using Gabonet.MongoRepository.Abstractions.Request;
 
 public class MongoRepository<T> : IMongoRepository<T> where T : class
 {

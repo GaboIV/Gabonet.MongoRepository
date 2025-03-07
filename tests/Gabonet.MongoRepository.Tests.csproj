@@ -4,7 +4,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Gabonet.MongoRepository.csproj" />
+    <ProjectReference Include="..\src\Gabonet.MongoRepository\Gabonet.MongoRepository.csproj" />
   </ItemGroup>
 
   <ItemGroup>

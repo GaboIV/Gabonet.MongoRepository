@@ -1,4 +1,4 @@
-namespace GasonetAuth.Application.Requests;
+namespace Gabonet.MongoRepository.Abstractions.Request;
 
 public class PagedRequest
 {

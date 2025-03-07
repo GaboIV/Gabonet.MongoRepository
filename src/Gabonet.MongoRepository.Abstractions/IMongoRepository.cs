@@ -1,8 +1,8 @@
-namespace Gabonet.MongoRepository.Interfaces;
+namespace Gabonet.MongoRepository.Abstractions;
 
 using System.Linq.Expressions;
-using Gabonet.MongoRepository.DTOs;
-using GasonetAuth.Application.Requests;
+using Gabonet.MongoRepository.Abstractions.DTOs;
+using Gabonet.MongoRepository.Abstractions.Request;
 
 public interface IMongoRepository<T> where T : class
 {
