@@ -6,7 +6,7 @@ using MongoDB.Driver;
 
 public static class LookupHelpers
 {
-    public static IAggregateFluent<BsonDocument> ApplyLookups<T>(IAggregateFluent<BsonDocument> aggregation, List<string>? lookups) where T: class
+    public static IAggregateFluent<BsonDocument> ApplyLookups<T>(IAggregateFluent<BsonDocument> aggregation, List<string>? lookups) where T : class
     {
         var properties = typeof(T).GetProperties()
           .Where(p => Attribute.IsDefined(p, typeof(MongoLookupAttribute)))
@@ -38,7 +38,7 @@ public static class LookupHelpers
                 }
 
                 var nestedType = property.PropertyType;
-                if (!isList && nestedType.IsClass && nestedType!= typeof(string))
+                if (!isList && nestedType.IsClass && nestedType != typeof(string))
                 {
                     var nestedProperties = nestedType.GetProperties()
                       .Where(p => Attribute.IsDefined(p, typeof(MongoLookupAttribute)))
@@ -55,7 +55,7 @@ public static class LookupHelpers
         return aggregation;
     }
 
-    public static IAggregateFluent<BsonDocument> ApplyNestedLookups<T>(IAggregateFluent<BsonDocument> aggregation, Type nestedType, string parentAlias) where T: class
+    public static IAggregateFluent<BsonDocument> ApplyNestedLookups<T>(IAggregateFluent<BsonDocument> aggregation, Type nestedType, string parentAlias) where T : class
     {
         var nestedProperties = nestedType.GetProperties()
           .Where(p => Attribute.IsDefined(p, typeof(MongoLookupAttribute)))
@@ -65,7 +65,7 @@ public static class LookupHelpers
         {
             var nestedLookupAttr = Attribute.GetCustomAttribute(nestedProperty, typeof(MongoLookupAttribute)) as MongoLookupAttribute;
 
-            if (nestedLookupAttr!= null)
+            if (nestedLookupAttr != null)
             {
                 string nestedAlias = $"{parentAlias}.{nestedProperty.Name}";
 
@@ -87,7 +87,7 @@ public static class LookupHelpers
                 }
 
                 var nextNestedType = nestedProperty.PropertyType;
-                if (!isList && nextNestedType.IsClass && nextNestedType!= typeof(string))
+                if (!isList && nextNestedType.IsClass && nextNestedType != typeof(string))
                 {
                     aggregation = ApplyNestedLookups<T>(aggregation, nextNestedType, nestedAlias);
                 }

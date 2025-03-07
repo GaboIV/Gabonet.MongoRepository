@@ -14,10 +14,7 @@ public enum PropertyType
 public class LookupDictionary
 {
     public static readonly Dictionary<string, string> sortDictionary = new()
-    {
-        { "nombre", "name" },
-        { "fecha", "date" },
-    };
+    { };
 
     public static readonly Dictionary<string, (string property, string filterType, PropertyType propertyType)> filterDictionary = new()
     { };

@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gabonet.MongoRepository.Abs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gabonet.MongoRepository.Tests", "tests\Gabonet.MongoRepository.Tests.csproj", "{77DDDA91-DF72-4DBA-AE1B-973C41572CE8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gabonet.MongoRepository.Attributes", "src\Gabonet.MongoRepository.Attributes\Gabonet.MongoRepository.Attributes.csproj", "{C0D34360-D1EE-48CF-AC07-7624BD2C9A72}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,9 +34,14 @@ Global
 		{77DDDA91-DF72-4DBA-AE1B-973C41572CE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{77DDDA91-DF72-4DBA-AE1B-973C41572CE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{77DDDA91-DF72-4DBA-AE1B-973C41572CE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0D34360-D1EE-48CF-AC07-7624BD2C9A72}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0D34360-D1EE-48CF-AC07-7624BD2C9A72}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0D34360-D1EE-48CF-AC07-7624BD2C9A72}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0D34360-D1EE-48CF-AC07-7624BD2C9A72}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{8DBF558F-F2B2-4100-BB85-11F527BA6E42} = {3B097A81-8155-4693-A2B8-2DEA23CAE3F8}
 		{0A33C5DD-22F9-4672-A6F7-F8BBF6C8BC13} = {3B097A81-8155-4693-A2B8-2DEA23CAE3F8}
+		{C0D34360-D1EE-48CF-AC07-7624BD2C9A72} = {3B097A81-8155-4693-A2B8-2DEA23CAE3F8}
 	EndGlobalSection
 EndGlobal
