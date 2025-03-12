@@ -1,10 +1,10 @@
 namespace Gabonet.MongoRepository.Helpers;
 
+using Attributes;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System.Reflection;
 using GabonetCard.Infrastructure.Helpers;
-using Gabonet.MongoRepository.Attributes;
 
 public static class FilterHelpers
 {
@@ -16,6 +16,8 @@ public static class FilterHelpers
         if (filters == null || !filters.Any()) return filterDefinition;
 
         var filterList = new List<FilterDefinition<T>>();
+        
+        var lookupDictionary = LookupDictionaryBase<T>.GetLookupDictionary();
 
         foreach (var filter in filters)
         {
@@ -23,8 +25,10 @@ public static class FilterHelpers
             var propertyName = filter.Key;
             PropertyType propertyType = PropertyType.ObjectId;
             var filterType = GetFilterType<T>(propertyName);
+            
+            (string,string) valueTuple= (propertyName, "propertyType");
 
-            if (LookupDictionary.filterDictionary.TryGetValue(propertyName.ToLower(), out var mappedValue)) 
+            if (lookupDictionary!=null && lookupDictionary.FilterDictionary.TryGetValue(propertyName.ToLower(), out var mappedValue)) 
             {
                 propertyName = mappedValue.property;
                 filterType = mappedValue.filterType;
@@ -52,7 +56,9 @@ public static class FilterHelpers
                             ? filterBuilder.Eq(propertyName, DateTime.Parse(propertyValue))
                             : filterBuilder.Eq(bsonElementName, dateValue);
                     }
-                    else if (decimal.TryParse(propertyValue, out var numericValue) || (isMapped && propertyType.Equals(PropertyType.Decimal)))
+                    else if (( decimal.TryParse(
+                                 propertyValue,
+                                 out var numericValue) && !isMapped ) || (isMapped && (propertyType.Equals(PropertyType.Decimal)||propertyType.Equals(PropertyType.Number))))
                     {
                         filterExpression = isMapped
                             ? filterBuilder.Eq(propertyName, decimal.Parse(propertyValue))
@@ -67,12 +73,17 @@ public static class FilterHelpers
                 }
                 else
                 {
+                    if (string.IsNullOrWhiteSpace(propertyValue))
+                    {
+                        continue;
+                    }
+                    
                     var searchTerms = propertyValue.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
                     if (searchTerms.Length == 0) continue;
 
                     var regexFilters = searchTerms.Select(term =>
-                        filterBuilder.Regex(bsonElementName, new BsonRegularExpression(term, "i")));
+                        filterBuilder.Regex(bsonElementName ?? propertyName, new BsonRegularExpression(term, "i")));
 
                     filterExpression = regexFilters.Count() == 1
                         ? regexFilters.First()
@@ -88,7 +99,7 @@ public static class FilterHelpers
 
     public static string? GetFilterType<T>(string propertyName)
     {
-        var propertyInfo = typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+        var propertyInfo = typeof(T).GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance); 
 
         if (propertyInfo != null)
         {

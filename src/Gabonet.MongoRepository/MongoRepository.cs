@@ -67,6 +67,27 @@ public class MongoRepository<T> : IMongoRepository<T> where T : class
     {
         await _collection.DeleteOneAsync(Builders<T>.Filter.Eq("_id", id));
     }
+    
+    public async Task<IEnumerable<T>> GetAllWithFiltersAsync(PagedRequest request, List<string>? lookups = null)
+    {
+        var filters = request.Filters ?? new Dictionary<string, string>();
+        var filterDefinition = FilterHelpers.BuildFilters<T>(filters);
+
+        var aggregation = _collection.Aggregate().As<BsonDocument>();
+        aggregation = AggregationHelpers.ApplyMatch<T>(aggregation, filterDefinition);
+
+        if (filters.TryGetValue("aggregation", out var aggregationFilter))
+        {
+            aggregation = AggregationHelpers.ApplyAggregationMatch<T>(aggregation, aggregationFilter);
+        }
+
+        aggregation = SortingHelpers.BuildSorting<T>(aggregation, request.OrderColumn, request.OrderBy);
+        aggregation = LookupHelpers.ApplyLookups<T>(aggregation, lookups);
+
+        var items = await aggregation.As<T>().ToListAsync();
+
+        return items;
+    }
 
     public async Task<PaginatedDataDto<T>> GetPagedAsync(PagedRequest request, List<string>? lookups = null)
     {
@@ -77,7 +98,7 @@ public class MongoRepository<T> : IMongoRepository<T> where T : class
         var totalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize);
 
         var aggregation = _collection.Aggregate().As<BsonDocument>();
-        aggregation = LookupHelpers.ApplyLookups<T>(aggregation, lookups);
+        
         aggregation = AggregationHelpers.ApplyMatch<T>(aggregation, filterDefinition);
 
         if (filters.TryGetValue("aggregation", out var aggregationFilter))
@@ -86,6 +107,7 @@ public class MongoRepository<T> : IMongoRepository<T> where T : class
         }
 
         aggregation = SortingHelpers.BuildSorting<T>(aggregation, request.OrderColumn, request.OrderBy);
+        aggregation = LookupHelpers.ApplyLookups<T>(aggregation, lookups);
 
         var skip = (request.PageNumber - 1) * request.PageSize;
         aggregation = aggregation.Skip(skip).Limit(request.PageSize);
