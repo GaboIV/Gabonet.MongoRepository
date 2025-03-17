@@ -25,8 +25,7 @@ public static class FilterHelpers
             var propertyName = filter.Key;
             PropertyType propertyType = PropertyType.ObjectId;
             var filterType = GetFilterType<T>(propertyName);
-            
-            (string,string) valueTuple= (propertyName, "propertyType");
+        
 
             if (lookupDictionary!=null && lookupDictionary.FilterDictionary.TryGetValue(propertyName.ToLower(), out var mappedValue)) 
             {
