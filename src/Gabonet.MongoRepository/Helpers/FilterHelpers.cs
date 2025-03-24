@@ -55,6 +55,12 @@ public static class FilterHelpers
                             ? filterBuilder.Eq(propertyName, DateTime.Parse(propertyValue))
                             : filterBuilder.Eq(bsonElementName, dateValue);
                     }
+                    else if (bool.TryParse(propertyValue, out var boolValue) || (isMapped && propertyType.Equals(PropertyType.Boolean)))
+                    {
+                        filterExpression = isMapped
+                            ? filterBuilder.Eq(propertyName, Boolean.Parse(propertyValue))
+                            : filterBuilder.Eq(bsonElementName, boolValue);
+                    }
                     else if (( decimal.TryParse(
                                  propertyValue,
                                  out var numericValue) && !isMapped ) || (isMapped && (propertyType.Equals(PropertyType.Decimal)||propertyType.Equals(PropertyType.Number))))
