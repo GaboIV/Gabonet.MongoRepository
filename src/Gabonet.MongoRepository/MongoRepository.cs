@@ -13,6 +13,11 @@ public class MongoRepository<T> : IMongoRepository<T> where T : class
 {
     protected readonly IMongoCollection<T> _collection;
 
+    public MongoRepository(IMongoCollection<T> collection)
+    {
+        _collection = collection;
+    }
+
     public MongoRepository(IMongoDatabase database, string collectionName)
     {
         _collection = database.GetCollection<T>(collectionName);
