@@ -99,26 +99,30 @@ public class MongoRepository<T> : IMongoRepository<T> where T : class
         var filters = request.Filters ?? new Dictionary<string, string>();
         var filterDefinition = FilterHelpers.BuildFilters<T>(filters);
 
-        var totalRecords = await _collection.CountDocumentsAsync(filterDefinition);
-        var totalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize);
+        var basePipeline = _collection.Aggregate().As<BsonDocument>();
 
-        var aggregation = _collection.Aggregate().As<BsonDocument>();
-        
-        aggregation = AggregationHelpers.ApplyMatch<T>(aggregation, filterDefinition);
+        basePipeline = AggregationHelpers.ApplyMatch<T>(basePipeline, filterDefinition);
 
         if (filters.TryGetValue("aggregation", out var aggregationFilter))
         {
-            aggregation = AggregationHelpers.ApplyAggregationMatch<T>(aggregation, aggregationFilter);
+            basePipeline = AggregationHelpers.ApplyAggregationMatch<T>(basePipeline, aggregationFilter);
         }
 
-        aggregation = SortingHelpers.BuildSorting<T>(aggregation, request.OrderColumn, request.OrderBy);
-        aggregation = LookupHelpers.ApplyLookups<T>(aggregation, lookups);
+        basePipeline = LookupHelpers.ApplyLookups<T>(basePipeline, lookups);
+
+        var countPipeline = basePipeline.AppendStage<BsonDocument>("{ $count: 'total' }");
+        var countResult = await countPipeline.FirstOrDefaultAsync();
+        var totalRecords = countResult?["total"].AsInt32 ?? 0;
+        var totalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize);
+
+        var pagedPipeline = basePipeline;
+        pagedPipeline = SortingHelpers.BuildSorting<T>(pagedPipeline, request.OrderColumn, request.OrderBy);
 
         var skip = (request.PageNumber - 1) * request.PageSize;
-        aggregation = aggregation.Skip(skip).Limit(request.PageSize);
+        pagedPipeline = pagedPipeline.Skip(skip).Limit(request.PageSize);
 
         var items = totalRecords > 0
-            ? await aggregation.As<T>().ToListAsync()
+            ? await pagedPipeline.As<T>().ToListAsync()
             : new List<T>();
 
         return new PaginatedDataDto<T>
@@ -127,7 +131,7 @@ public class MongoRepository<T> : IMongoRepository<T> where T : class
             Pagination = new PaginationInfo
             {
                 TotalPages = totalPages,
-                TotalItems = (int)totalRecords,
+                TotalItems = totalRecords,
                 CurrentPage = request.PageNumber,
                 ItemsPerPage = request.PageSize
             }
