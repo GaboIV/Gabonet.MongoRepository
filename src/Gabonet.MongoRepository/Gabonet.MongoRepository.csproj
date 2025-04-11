@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <PackageId>Gabonet.MongoRepository</PackageId>
-    <Version>0.2.4.7</Version>
+    <Version>0.2.6</Version>
     <Authors>Gabriel Caraballo</Authors>
     <Company>Gabonet</Company>
     <Description>Un repositorio genérico para MongoDB en .NET</Description>

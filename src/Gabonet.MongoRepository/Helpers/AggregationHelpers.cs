@@ -36,4 +36,33 @@ public static class AggregationHelpers
         var filter = BsonDocument.Parse(aggregationFilter);
         return aggregation.Match(filter);
     }
+
+    public static IAggregateFluent<BsonDocument> ApplySortPipeline<T>(
+        IAggregateFluent<BsonDocument> aggregation,
+        string sortPipeline)
+    {
+        try 
+        {
+            // Si el pipeline no está en formato de array, lo convertimos
+            if (!sortPipeline.Trim().StartsWith("["))
+            {
+                sortPipeline = "[" + sortPipeline + "]";
+            }
+            
+            var pipelineArray = BsonSerializer.Deserialize<BsonArray>(sortPipeline);
+
+            foreach (var stage in pipelineArray)
+            {
+                aggregation = aggregation.AppendStage<BsonDocument>(stage.AsBsonDocument);
+            }
+
+            return aggregation;
+        }
+        catch
+        {
+            // Log error if needed
+            // En caso de error, devolvemos la agregación sin cambios
+            return aggregation;
+        }
+    }
 }

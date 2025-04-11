@@ -72,7 +72,7 @@ public class MongoRepository<T> : IMongoRepository<T> where T : class
     {
         await _collection.DeleteOneAsync(Builders<T>.Filter.Eq("_id", id));
     }
-    
+
     public async Task<IEnumerable<T>> GetAllWithFiltersAsync(PagedRequest request, List<string>? lookups = null)
     {
         var filters = request.Filters ?? new Dictionary<string, string>();
@@ -86,7 +86,16 @@ public class MongoRepository<T> : IMongoRepository<T> where T : class
             aggregation = AggregationHelpers.ApplyAggregationMatch<T>(aggregation, aggregationFilter);
         }
 
-        aggregation = SortingHelpers.BuildSorting<T>(aggregation, request.OrderColumn, request.OrderBy);
+        // Apply custom sort pipeline if provided
+        if (filters.TryGetValue("sortPipeline", out var sortPipeline))
+        {
+            aggregation = AggregationHelpers.ApplySortPipeline<T>(aggregation, sortPipeline);
+        }
+        else
+        {
+            aggregation = SortingHelpers.BuildSorting<T>(aggregation, request.OrderColumn, request.OrderBy);
+        }
+
         aggregation = LookupHelpers.ApplyLookups<T>(aggregation, lookups);
 
         var items = await aggregation.As<T>().ToListAsync();
@@ -116,7 +125,16 @@ public class MongoRepository<T> : IMongoRepository<T> where T : class
         var totalPages = (int)Math.Ceiling((double)totalRecords / request.PageSize);
 
         var pagedPipeline = basePipeline;
-        pagedPipeline = SortingHelpers.BuildSorting<T>(pagedPipeline, request.OrderColumn, request.OrderBy);
+
+        // Apply custom sort pipeline if provided
+        if (filters.TryGetValue("sortPipeline", out var sortPipeline))
+        {
+            pagedPipeline = AggregationHelpers.ApplySortPipeline<T>(pagedPipeline, sortPipeline);
+        }
+        else
+        {
+            pagedPipeline = SortingHelpers.BuildSorting<T>(pagedPipeline, request.OrderColumn, request.OrderBy);
+        }
 
         var skip = (request.PageNumber - 1) * request.PageSize;
         pagedPipeline = pagedPipeline.Skip(skip).Limit(request.PageSize);
